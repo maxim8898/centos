@@ -1,7 +1,7 @@
 FROM centos:7.8.2003
 
 ENV TIMEZONE Europe/Moscow
-ENV PHP_MEMORY_LIMIT 1024M
+ENV PHP_MEMORY_LIMIT 2048M
 ENV MAX_UPLOAD 128M
 ENV PHP_MAX_FILE_UPLOAD 128
 ENV PHP_MAX_POST 128M
@@ -18,14 +18,7 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
     && yum -y install yum-utils wget \
     && yum-config-manager --enable remi-php74 \
     && yum -y update \
-    && yum -y install php php-cli php-fpm php-mysqlnd php-zip php-devel php-gd php-mcrypt php-mbstring php-curl php-xml php-pear php-bcmath php-json
-
-# Installing the Composer
-RUN mkdir /tmp/composer
-WORKDIR /tmp/composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && php -r "unlink('composer-setup.php');"
+    && yum -y install php php-cli php-fpm php-mysqlnd php-zip php-devel php-gd php-mcrypt php-mbstring php-curl php-xml php-pear php-bcmath php-json composer git
 
 # Setting the php-fpm configurations
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php-fpm.conf \
