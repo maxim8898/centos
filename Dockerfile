@@ -12,8 +12,13 @@ COPY pdftk-2.02-1.el7.x86_64.rpm /tmp/pdftk
 WORKDIR /tmp/pdftk
 RUN yum localinstall pdftk-2.02-1.el7.x86_64.rpm -y
 
-RUN yum -y update && yum clean all
-RUN yum -y install php php-cli php-fpm php-mbstring php-mysql php-zip php-devel php-mcrypt php-gd php-curl php-xml php-pear php-bcmath php-json git npm \
+RUN yum -y update && yum clean all \
+    && yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+    && yum -y install https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+    && yum -y install yum-utils wget \
+    && yum-config-manager --enable remi-php74 \
+    && yum -y update
+RUN yum -y install php php-cli php-fpm php-mbstring php-mysql php-pgsql php-zip php-devel php-mcrypt php-gd php-curl php-xml php-pear php-bcmath php-json git \
     && yum clean all
 
 RUN mkdir /tmp/composer
@@ -38,9 +43,12 @@ RUN sed -e 's/127.0.0.1:9000/9000/' \
 # Intalling the Drupal
 COPY ./ /var/www/html
 WORKDIR /var/www/html
-# RUN composer install
-# RUN npm install -g gulp
+RUN yum -y install gcc-c++ make
+RUN curl -sL https://rpm.nodesource.com/setup_14.x > nodejs.sh
+RUN ["/bin/bash", "-c", "bash nodejs.sh && rm nodejs.sh"]
+RUN yum -y install nodejs && npm install -g gulp@4.0.2
 
 RUN mkdir -p /var/www/html
+RUN mkdir /run/php-fpm
 EXPOSE 9000
-ENTRYPOINT /usr/sbin/php-fpm --nodaemonize
+ENTRYPOINT ["/usr/sbin/php-fpm", "-F"]
