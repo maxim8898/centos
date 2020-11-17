@@ -40,6 +40,13 @@ RUN sed -e 's/127.0.0.1:9000/9000/' \
     && sed -i "s|post_max_size =.*|post_max_size = ${PHP_MAX_POST}|" /etc/php.ini \
     && sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php.ini
 
+# Installing Xdebug
+RUN yum -y install php-xdebug
+RUN echo "xdebug.remote_enable = 1" >> /etc/php.d/15-xdebug.ini \
+    && echo "xdebug.remote_connect_back = 1" >> /etc/php.d/15-xdebug.ini \
+    && echo "xdebug.remote_host = host.docker.internal" >> /etc/php.d/15-xdebug.ini \
+    && echo "xdebug.remote_port = 9000" >> /etc/php.d/15-xdebug.ini
+
 # Intalling the Drupal
 COPY ./ /var/www/html
 WORKDIR /var/www/html
