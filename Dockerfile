@@ -21,6 +21,7 @@ RUN yum -y update && yum clean all \
 RUN yum -y install php php-cli php-fpm php-mbstring php-mysql php-pgsql php-zip php-devel php-mcrypt php-gd php-curl php-xml php-pear php-bcmath php-json git \
     && yum clean all
 
+# Installing Composer 1.10.7
 RUN mkdir /tmp/composer
 WORKDIR /tmp/composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
