@@ -43,10 +43,6 @@ RUN sed -e 's/127.0.0.1:9000/9000/' \
 # Installing Xdebug
 RUN yum -y install php-xdebug
 COPY ./15-xdebug.ini /etc/php.d
-RUN echo "xdebug.remote_enable = 1" >> /etc/php.d/15-xdebug.ini \
-    && echo "xdebug.remote_connect_back = 1" >> /etc/php.d/15-xdebug.ini \
-    && echo "xdebug.remote_host = host.docker.internal" >> /etc/php.d/15-xdebug.ini \
-    && echo "xdebug.remote_port = 9000" >> /etc/php.d/15-xdebug.ini
 
 # Intalling the Drupal
 COPY ./ /var/www/html
